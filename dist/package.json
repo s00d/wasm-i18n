@@ -1,0 +1,20 @@
+{
+  "name": "wasm-i18n",
+  "type": "module",
+  "collaborators": [
+    "Pavel Kuzmin <Virus191288@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "wasm_i18n_bg.wasm",
+    "wasm_i18n.js",
+    "wasm_i18n_bg.js",
+    "wasm_i18n.d.ts"
+  ],
+  "main": "wasm_i18n.js",
+  "types": "wasm_i18n.d.ts",
+  "sideEffects": [
+    "./wasm_i18n.js",
+    "./snippets/*"
+  ]
+}

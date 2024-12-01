@@ -1,0 +1,61 @@
+{
+  "name": "wasm-i18n",
+  "version": "0.2.0",
+  "description": "A lightweight, high-performance internationalization module for web applications using WebAssembly and Rust.",
+  "repository": "your-repo/wasm-i18n",
+  "license": "MIT",
+  "type": "module",
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@example.com",
+    "url": "https://github.com/s00d/wasm-i18n"
+  },
+  "keywords": [
+    "wasm",
+    "webassembly",
+    "i18n",
+    "internationalization",
+    "localization",
+    "multi-language",
+    "translation",
+    "rust",
+    "wasm-bindgen"
+  ],
+  "homepage": "https://github.com/s00d/wasm-i18n",
+  "bugs": {
+    "url": "https://github.com/s00d/wasm-i18n/issues"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/wasm-i18n.web.js",
+      "require": "./dist/wasm-i18n.node.js"
+    },
+    "./nodejs": "./dist/wasm-i18n.node.js",
+    "./web": "./dist/wasm-i18n.web.js"
+  },
+  "main": "./dist/wasm-i18n.node.js",
+  "module": "./dist/wasm-i18n.web.js",
+  "browser": "./dist/wasm-i18n.web.js",
+  "types": "./dist/wasm_i18n.d.ts",
+  "files": [
+    "dist",
+    "examples"
+  ],
+  "scripts": {
+    "pack": "wasm-pack build --target bundler --out-dir pkg/bundler",
+    "build": "npm run pack && npm run copy-wasm",
+    "copy-wasm": "cp -rf pkg/bundler/* dist",
+    "start": "vite",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "playwright test",
+    "test:watch": "vitest watch",
+    "test:types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.11",
+    "typescript": "5.6.3",
+    "vite": "^5.4.11",
+    "vite-plugin-wasm": "^3.3.0"
+  }
+}
