@@ -10,7 +10,6 @@ export function has_translation(locale: string, key: string): boolean;
 export function has_locale(locale: string): boolean;
 export function format_translation(locale: string, key: string, args: any): string;
 export function load_translations(url: string): Promise<void>;
-export function err(e: string): Promise<void>;
 export function get_all_locales(): any;
 export function get_all_translations_for_locale(locale: string): any;
 export function clear_all_translations(): void;

@@ -1,15 +1,26 @@
+#[cfg(feature = "wee_alloc")]
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
 mod format;
-mod utils;
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
-use wasm_bindgen::prelude::*;
 use once_cell::sync::Lazy;
 use std::sync::Mutex;
 use serde_wasm_bindgen::{from_value, to_value};
+use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, Response};
+use wasm_bindgen::prelude::wasm_bindgen;
+
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+}
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Translations {
@@ -145,14 +156,6 @@ pub async fn load_translations(url: &str) -> Result<(), JsValue> {
     for (locale, translation) in translations {
         locked_translations.translations.insert(locale, translation);
     }
-
-    Ok(())
-}
-
-#[wasm_bindgen]
-pub async fn err(e: &str) -> Result<(), JsValue> {
-    console_error_panic_hook::set_once();
-    eprintln!("Failed to parse JSON: {}", e);
 
     Ok(())
 }

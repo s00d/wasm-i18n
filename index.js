@@ -1,5 +1,4 @@
-let wasmi18n = require('./dist/wasm_i18n.js');
-
+import * as wasmi18n from "./dist/wasm_i18n.js";
 
 async function run() {
     await wasmi18n.set_translations('en', JSON.stringify({

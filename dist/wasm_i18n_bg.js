@@ -113,7 +113,7 @@ function isLikeNone(x) {
 const CLOSURE_DTORS = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(state => {
-    wasm.__wbindgen_export_6.get(state.dtor)(state.a, state.b)
+    wasm.__wbindgen_export_5.get(state.dtor)(state.a, state.b)
 });
 
 function makeMutClosure(arg0, arg1, dtor, f) {
@@ -129,7 +129,7 @@ function makeMutClosure(arg0, arg1, dtor, f) {
             return f(a, state.b, ...args);
         } finally {
             if (--state.cnt === 0) {
-                wasm.__wbindgen_export_6.get(state.dtor)(a, state.b);
+                wasm.__wbindgen_export_5.get(state.dtor)(a, state.b);
                 CLOSURE_DTORS.unregister(state);
             } else {
                 state.a = a;
@@ -385,17 +385,6 @@ export function load_translations(url) {
 }
 
 /**
- * @param {string} e
- * @returns {Promise<void>}
- */
-export function err(e) {
-    const ptr0 = passStringToWasm0(e, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.err(ptr0, len0);
-    return ret;
-}
-
-/**
  * @returns {any}
  */
 export function get_all_locales() {
@@ -469,11 +458,11 @@ export function has_key_in_translations(locale, key) {
 }
 
 function __wbg_adapter_50(arg0, arg1, arg2) {
-    wasm.closure43_externref_shim(arg0, arg1, arg2);
+    wasm.closure37_externref_shim(arg0, arg1, arg2);
 }
 
-function __wbg_adapter_134(arg0, arg1, arg2, arg3) {
-    wasm.closure66_externref_shim(arg0, arg1, arg2, arg3);
+function __wbg_adapter_127(arg0, arg1, arg2, arg3) {
+    wasm.closure60_externref_shim(arg0, arg1, arg2, arg3);
 }
 
 export function __wbg_String_8f0eb39a4a4c2f66(arg0, arg1) {
@@ -507,18 +496,6 @@ export function __wbg_done_adfd3f40364def50(arg0) {
 export function __wbg_entries_ce82e236f8300a53(arg0) {
     const ret = Object.entries(arg0);
     return ret;
-};
-
-export function __wbg_error_7534b8e9a36f1ab4(arg0, arg1) {
-    let deferred0_0;
-    let deferred0_1;
-    try {
-        deferred0_0 = arg0;
-        deferred0_1 = arg1;
-        console.error(getStringFromWasm0(arg0, arg1));
-    } finally {
-        wasm.__wbindgen_free(deferred0_0, deferred0_1, 1);
-    }
 };
 
 export function __wbg_fetch_ffad8c569a5e9c85(arg0, arg1) {
@@ -648,7 +625,7 @@ export function __wbg_new_1e8ca58d170d6ad0(arg0, arg1) {
             const a = state0.a;
             state0.a = 0;
             try {
-                return __wbg_adapter_134(a, state0.b, arg0, arg1);
+                return __wbg_adapter_127(a, state0.b, arg0, arg1);
             } finally {
                 state0.a = a;
             }
@@ -667,11 +644,6 @@ export function __wbg_new_23362fa370a0a372(arg0) {
 
 export function __wbg_new_3f616ed16821b4c5() {
     const ret = new Map();
-    return ret;
-};
-
-export function __wbg_new_8a6f238a6ece86ea() {
-    const ret = new Error();
     return ret;
 };
 
@@ -735,14 +707,6 @@ export function __wbg_setmethod_c704d56d480d8580(arg0, arg1, arg2) {
     arg0.method = getStringFromWasm0(arg1, arg2);
 };
 
-export function __wbg_stack_0ed75d68575b0f3c(arg0, arg1) {
-    const ret = arg1.stack;
-    const ptr1 = passStringToWasm0(ret, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len1 = WASM_VECTOR_LEN;
-    getDataViewMemory0().setInt32(arg0 + 4 * 1, len1, true);
-    getDataViewMemory0().setInt32(arg0 + 4 * 0, ptr1, true);
-};
-
 export function __wbg_then_5c6469c1e1da9e59(arg0, arg1) {
     const ret = arg0.then(arg1);
     return ret;
@@ -796,8 +760,8 @@ export function __wbindgen_cb_drop(arg0) {
     return ret;
 };
 
-export function __wbindgen_closure_wrapper457(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 44, __wbg_adapter_50);
+export function __wbindgen_closure_wrapper595(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 38, __wbg_adapter_50);
     return ret;
 };
 

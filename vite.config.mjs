@@ -3,10 +3,8 @@ import { resolve } from 'path';
 import wasm from 'vite-plugin-wasm';
 
 export default defineConfig(({ command }) => {
-    const root = command === 'serve' ? './examples' : './';
-
     return {
-        root,
+        root: './',
         build: {
             outDir: './dist',
             target: 'esnext', // Установите target на esnext для поддержки top-level await
@@ -27,7 +25,7 @@ export default defineConfig(({ command }) => {
             },
         },
         server: {
-            port: 9000,
+            port: 9001,
         },
         plugins: [
             wasm(),

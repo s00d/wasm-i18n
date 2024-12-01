@@ -4,12 +4,20 @@
   "collaborators": [
     "Pavel Kuzmin <Virus191288@gmail.com>"
   ],
-  "version": "0.2.0",
+  "description": "A lightweight, high-performance internationalization module for web applications using WebAssembly and Rust.",
+  "version": "0.2.1",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/s00d/wasm-i18n"
+  },
   "files": [
     "wasm_i18n_bg.wasm",
     "wasm_i18n.js",
     "wasm_i18n_bg.js",
-    "wasm_i18n.d.ts"
+    "wasm_i18n.d.ts",
+    "LICENSE_APACHE",
+    "LICENSE_MIT"
   ],
   "main": "wasm_i18n.js",
   "types": "wasm_i18n.d.ts",

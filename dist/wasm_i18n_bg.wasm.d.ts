@@ -11,7 +11,6 @@ export const has_translation: (a: number, b: number, c: number, d: number) => nu
 export const has_locale: (a: number, b: number) => number;
 export const format_translation: (a: number, b: number, c: number, d: number, e: any) => [number, number, number, number];
 export const load_translations: (a: number, b: number) => any;
-export const err: (a: number, b: number) => any;
 export const get_all_locales: () => [number, number, number];
 export const get_all_translations_for_locale: (a: number, b: number) => [number, number, number];
 export const clear_all_translations: () => [number, number];
@@ -23,9 +22,9 @@ export const __wbindgen_realloc: (a: number, b: number, c: number, d: number) =>
 export const __wbindgen_exn_store: (a: number) => void;
 export const __externref_table_alloc: () => number;
 export const __wbindgen_export_4: WebAssembly.Table;
-export const __wbindgen_free: (a: number, b: number, c: number) => void;
-export const __wbindgen_export_6: WebAssembly.Table;
+export const __wbindgen_export_5: WebAssembly.Table;
 export const __externref_table_dealloc: (a: number) => void;
-export const closure43_externref_shim: (a: number, b: number, c: any) => void;
-export const closure66_externref_shim: (a: number, b: number, c: any, d: any) => void;
+export const __wbindgen_free: (a: number, b: number, c: number) => void;
+export const closure37_externref_shim: (a: number, b: number, c: any) => void;
+export const closure60_externref_shim: (a: number, b: number, c: any, d: any) => void;
 export const __wbindgen_start: () => void;
