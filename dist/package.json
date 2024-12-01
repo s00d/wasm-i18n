@@ -4,7 +4,7 @@
   "collaborators": [
     "Pavel Kuzmin <Virus191288@gmail.com>"
   ],
-  "version": "0.1.0",
+  "version": "0.2.0",
   "files": [
     "wasm_i18n_bg.wasm",
     "wasm_i18n.js",

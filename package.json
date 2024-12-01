@@ -42,6 +42,7 @@
     "examples"
   ],
   "scripts": {
+    "publish": "cd dist && npm publish",
     "pack": "wasm-pack build --target bundler --out-dir pkg/bundler",
     "build": "npm run pack && npm run copy-wasm",
     "copy-wasm": "cp -rf pkg/bundler/* dist",
