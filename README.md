@@ -189,14 +189,6 @@ const exists = has_key_in_translations('en', 'hello');
 console.log(exists);
 ```
 
-### `add_locale(locale: string): Promise<void>`
-
-Adds a new locale with empty translations.
-
-```javascript
-await add_locale('fr');
-```
-
 ## License
 
 Licensed under either of

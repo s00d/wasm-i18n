@@ -228,52 +228,33 @@ export function set_translations(locale, json) {
 
 /**
  * @param {string} locale
- * @param {any} obj
+ * @param {string} key
+ * @returns {any}
  */
-export function set_translations_from_object(locale, obj) {
+export function get_translation(locale, key) {
     const ptr0 = passStringToWasm0(locale, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.set_translations_from_object(ptr0, len0, obj);
-    if (ret[1]) {
-        throw takeFromExternrefTable0(ret[0]);
+    const ptr1 = passStringToWasm0(key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ret = wasm.get_translation(ptr0, len0, ptr1, len1);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
     }
+    return takeFromExternrefTable0(ret[0]);
 }
 
 /**
  * @param {string} locale
- * @returns {string}
+ * @param {string} key
+ * @returns {boolean}
  */
-export function get_translations(locale) {
-    let deferred3_0;
-    let deferred3_1;
-    try {
-        const ptr0 = passStringToWasm0(locale, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.get_translations(ptr0, len0);
-        var ptr2 = ret[0];
-        var len2 = ret[1];
-        if (ret[3]) {
-            ptr2 = 0; len2 = 0;
-            throw takeFromExternrefTable0(ret[2]);
-        }
-        deferred3_0 = ptr2;
-        deferred3_1 = len2;
-        return getStringFromWasm0(ptr2, len2);
-    } finally {
-        wasm.__wbindgen_free(deferred3_0, deferred3_1, 1);
-    }
-}
-
-/**
- * @param {string} locale
- */
-export function del_translations(locale) {
+export function has_translation(locale, key) {
     const ptr0 = passStringToWasm0(locale, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.del_translations(ptr0, len0);
-    if (ret[1]) {
-        throw takeFromExternrefTable0(ret[0]);
-    }
+    const ptr1 = passStringToWasm0(key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ret = wasm.has_key_in_translations(ptr0, len0, ptr1, len1);
+    return ret !== 0;
 }
 
 /**
@@ -293,44 +274,41 @@ export function del_translation(locale, key) {
 
 /**
  * @param {string} locale
- * @param {string} key
- * @returns {string}
+ * @param {any} obj
  */
-export function get_translation(locale, key) {
-    let deferred4_0;
-    let deferred4_1;
-    try {
-        const ptr0 = passStringToWasm0(locale, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ptr1 = passStringToWasm0(key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-        const len1 = WASM_VECTOR_LEN;
-        const ret = wasm.get_translation(ptr0, len0, ptr1, len1);
-        var ptr3 = ret[0];
-        var len3 = ret[1];
-        if (ret[3]) {
-            ptr3 = 0; len3 = 0;
-            throw takeFromExternrefTable0(ret[2]);
-        }
-        deferred4_0 = ptr3;
-        deferred4_1 = len3;
-        return getStringFromWasm0(ptr3, len3);
-    } finally {
-        wasm.__wbindgen_free(deferred4_0, deferred4_1, 1);
+export function set_translations_from_object(locale, obj) {
+    const ptr0 = passStringToWasm0(locale, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.set_translations_from_object(ptr0, len0, obj);
+    if (ret[1]) {
+        throw takeFromExternrefTable0(ret[0]);
     }
 }
 
 /**
  * @param {string} locale
- * @param {string} key
- * @returns {boolean}
+ * @returns {any}
  */
-export function has_translation(locale, key) {
+export function get_translations(locale) {
     const ptr0 = passStringToWasm0(locale, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passStringToWasm0(key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.has_translation(ptr0, len0, ptr1, len1);
-    return ret !== 0;
+    const ret = wasm.get_translations(ptr0, len0);
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return takeFromExternrefTable0(ret[0]);
+}
+
+/**
+ * @param {string} locale
+ */
+export function del_translations(locale) {
+    const ptr0 = passStringToWasm0(locale, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.del_translations(ptr0, len0);
+    if (ret[1]) {
+        throw takeFromExternrefTable0(ret[0]);
+    }
 }
 
 /**
@@ -342,6 +320,51 @@ export function has_locale(locale) {
     const len0 = WASM_VECTOR_LEN;
     const ret = wasm.has_locale(ptr0, len0);
     return ret !== 0;
+}
+
+export function clear_all_translations() {
+    const ret = wasm.clear_all_translations();
+    if (ret[1]) {
+        throw takeFromExternrefTable0(ret[0]);
+    }
+}
+
+/**
+ * @param {string} url
+ * @returns {Promise<void>}
+ */
+export function load_translations(url) {
+    const ptr0 = passStringToWasm0(url, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.load_translations(ptr0, len0);
+    return ret;
+}
+
+/**
+ * @returns {any}
+ */
+export function get_all_locales() {
+    const ret = wasm.get_all_locales();
+    if (ret[2]) {
+        throw takeFromExternrefTable0(ret[1]);
+    }
+    return takeFromExternrefTable0(ret[0]);
+}
+
+/**
+ * @param {string} locale
+ * @param {string} key
+ * @param {any} value
+ */
+export function update_translation(locale, key, value) {
+    const ptr0 = passStringToWasm0(locale, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ptr1 = passStringToWasm0(key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    const len1 = WASM_VECTOR_LEN;
+    const ret = wasm.update_translation(ptr0, len0, ptr1, len1, value);
+    if (ret[1]) {
+        throw takeFromExternrefTable0(ret[0]);
+    }
 }
 
 /**
@@ -374,28 +397,6 @@ export function format_translation(locale, key, args) {
 }
 
 /**
- * @param {string} url
- * @returns {Promise<void>}
- */
-export function load_translations(url) {
-    const ptr0 = passStringToWasm0(url, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.load_translations(ptr0, len0);
-    return ret;
-}
-
-/**
- * @returns {any}
- */
-export function get_all_locales() {
-    const ret = wasm.get_all_locales();
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return takeFromExternrefTable0(ret[0]);
-}
-
-/**
  * @param {string} locale
  * @returns {any}
  */
@@ -407,29 +408,6 @@ export function get_all_translations_for_locale(locale) {
         throw takeFromExternrefTable0(ret[1]);
     }
     return takeFromExternrefTable0(ret[0]);
-}
-
-export function clear_all_translations() {
-    const ret = wasm.clear_all_translations();
-    if (ret[1]) {
-        throw takeFromExternrefTable0(ret[0]);
-    }
-}
-
-/**
- * @param {string} locale
- * @param {string} key
- * @param {any} value
- */
-export function update_translation(locale, key, value) {
-    const ptr0 = passStringToWasm0(locale, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passStringToWasm0(key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.update_translation(ptr0, len0, ptr1, len1, value);
-    if (ret[1]) {
-        throw takeFromExternrefTable0(ret[0]);
-    }
 }
 
 /**
@@ -457,12 +435,12 @@ export function has_key_in_translations(locale, key) {
     return ret !== 0;
 }
 
-function __wbg_adapter_50(arg0, arg1, arg2) {
-    wasm.closure37_externref_shim(arg0, arg1, arg2);
+function __wbg_adapter_48(arg0, arg1, arg2) {
+    wasm.closure47_externref_shim(arg0, arg1, arg2);
 }
 
-function __wbg_adapter_127(arg0, arg1, arg2, arg3) {
-    wasm.closure60_externref_shim(arg0, arg1, arg2, arg3);
+function __wbg_adapter_125(arg0, arg1, arg2, arg3) {
+    wasm.closure65_externref_shim(arg0, arg1, arg2, arg3);
 }
 
 export function __wbg_String_8f0eb39a4a4c2f66(arg0, arg1) {
@@ -625,7 +603,7 @@ export function __wbg_new_1e8ca58d170d6ad0(arg0, arg1) {
             const a = state0.a;
             state0.a = 0;
             try {
-                return __wbg_adapter_127(a, state0.b, arg0, arg1);
+                return __wbg_adapter_125(a, state0.b, arg0, arg1);
             } finally {
                 state0.a = a;
             }
@@ -760,8 +738,8 @@ export function __wbindgen_cb_drop(arg0) {
     return ret;
 };
 
-export function __wbindgen_closure_wrapper595(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 38, __wbg_adapter_50);
+export function __wbindgen_closure_wrapper658(arg0, arg1, arg2) {
+    const ret = makeMutClosure(arg0, arg1, 48, __wbg_adapter_48);
     return ret;
 };
 
@@ -840,11 +818,6 @@ export function __wbindgen_number_get(arg0, arg1) {
     const ret = typeof(obj) === 'number' ? obj : undefined;
     getDataViewMemory0().setFloat64(arg0 + 8 * 1, isLikeNone(ret) ? 0 : ret, true);
     getDataViewMemory0().setInt32(arg0 + 4 * 0, !isLikeNone(ret), true);
-};
-
-export function __wbindgen_number_new(arg0) {
-    const ret = arg0;
-    return ret;
 };
 
 export function __wbindgen_string_get(arg0, arg1) {

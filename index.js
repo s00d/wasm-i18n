@@ -1,11 +1,11 @@
 import * as wasmi18n from "./dist/wasm_i18n.js";
 
 async function run() {
-    await wasmi18n.set_translations('en', JSON.stringify({
+    wasmi18n.set_translations('en', JSON.stringify({
         "welcome": "Hello {username}"
     }));
 
-    await wasmi18n.set_translations('en', JSON.stringify({
+    wasmi18n.set_translations('en', JSON.stringify({
         "test": {
             "data": '1111'
         }
@@ -25,6 +25,9 @@ async function run() {
 
     const test = wasmi18n.get_translation('en', "test.data");
     console.log(test);
+
+    const test1 = wasmi18n.get_translation('en', "test");
+    console.log(test1);
 }
 
 run();
