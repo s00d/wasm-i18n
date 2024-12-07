@@ -7,12 +7,6 @@ use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, Response};
 use crate::format::format_string;
 
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
-}
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(untagged)]
 pub(crate) enum TranslationValue {
@@ -25,14 +19,11 @@ struct Translations {
     translations: HashMap<String, HashMap<String, TranslationValue>>,
 }
 
-#[wasm_bindgen]
 pub struct TranslationManager {
     translations: Mutex<Translations>,
 }
 
-#[wasm_bindgen]
 impl TranslationManager {
-    #[wasm_bindgen(constructor)]
     pub fn new() -> TranslationManager {
         TranslationManager {
             translations: Mutex::new(Translations {
@@ -52,12 +43,6 @@ impl TranslationManager {
             .or_default()
             .extend(parsed);
         Ok(())
-    }
-
-    pub fn set_translations_from_object(&self, locale: &str, obj: JsValue) -> Result<(), JsValue> {
-        let parsed: HashMap<String, TranslationValue> = from_value(obj)?;
-        let json_str = serde_json::to_string(&parsed).map_err(|e| JsValue::from_str(&e.to_string()))?;
-        self.set_translations(locale, &json_str)
     }
 
     pub fn get_translation(&self, locale: &str, key: &str) -> Result<JsValue, JsValue> {
