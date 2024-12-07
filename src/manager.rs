@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::sync::Mutex;
+use std::sync::RwLock;
 use crate::format::format_string;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -16,20 +16,20 @@ struct Translations {
 }
 
 pub struct TranslationManager {
-    translations: Mutex<Translations>,
+    translations: RwLock<Translations>,
 }
 
 impl TranslationManager {
     pub fn new() -> TranslationManager {
         TranslationManager {
-            translations: Mutex::new(Translations {
+            translations: RwLock::new(Translations {
                 translations: HashMap::new(),
             }),
         }
     }
 
     pub fn set_translations(&self, locale: &str, json: &str) -> Result<(), String> {
-        let mut translations = self.translations.lock().unwrap();
+        let mut translations = self.translations.write().unwrap();
         let parsed: HashMap<String, TranslationValue> =
             serde_json::from_str(json).map_err(|e| e.to_string())?;
 
@@ -42,7 +42,7 @@ impl TranslationManager {
     }
 
     pub fn get_translation(&self, locale: &str, key: &str) -> Result<TranslationValue, String> {
-        let translations = self.translations.lock().unwrap();
+        let translations = self.translations.read().unwrap();
         let translation_map = translations
             .translations
             .get(locale)
@@ -51,18 +51,18 @@ impl TranslationManager {
     }
 
     pub fn get_translations(&self, locale: &str) -> Result<HashMap<String, TranslationValue>, String> {
-        let translations = self.translations.lock().unwrap();
+        let translations = self.translations.read().unwrap();
         translations.translations.get(locale).cloned().ok_or("Locale not found".to_string())
     }
 
     pub fn del_translations(&self, locale: &str) -> Result<(), String> {
-        let mut translations = self.translations.lock().unwrap();
+        let mut translations = self.translations.write().unwrap();
         translations.translations.remove(locale);
         Ok(())
     }
 
     pub fn has_translation(&self, locale: &str, key: &str) -> bool {
-        let translations = self.translations.lock().unwrap();
+        let translations = self.translations.read().unwrap();
         if let Some(translation_map) = translations.translations.get(locale) {
             self.get_value_by_key(translation_map, key).is_ok()
         } else {
@@ -71,17 +71,17 @@ impl TranslationManager {
     }
 
     pub fn has_locale(&self, locale: &str) -> bool {
-        let translations = self.translations.lock().unwrap();
+        let translations = self.translations.read().unwrap();
         translations.translations.contains_key(locale)
     }
 
     pub fn get_all_locales(&self) -> Vec<String> {
-        let translations = self.translations.lock().unwrap();
+        let translations = self.translations.read().unwrap();
         translations.translations.keys().cloned().collect()
     }
 
     pub fn update_translation(&self, locale: &str, key: &str, value: TranslationValue) -> Result<(), String> {
-        let mut translations = self.translations.lock().unwrap();
+        let mut translations = self.translations.write().unwrap();
         if let Some(existing) = translations.translations.get_mut(locale) {
             let keys: Vec<&str> = key.split('.').collect();
             let mut current = existing;
@@ -101,7 +101,7 @@ impl TranslationManager {
     }
 
     pub fn del_translation(&self, locale: &str, key: &str) -> Result<(), String> {
-        let mut translations = self.translations.lock().unwrap();
+        let mut translations = self.translations.write().unwrap();
         if let Some(existing_map) = translations.translations.get_mut(locale) {
             let keys: Vec<&str> = key.split('.').collect();
             let mut current = existing_map;
@@ -120,13 +120,13 @@ impl TranslationManager {
     }
 
     pub fn clear_all_translations(&self) -> Result<(), String> {
-        let mut translations = self.translations.lock().unwrap();
+        let mut translations = self.translations.write().unwrap();
         translations.translations.clear();
         Ok(())
     }
 
     pub fn format_translation(&self, locale: &str, key: &str, args: HashMap<String, String>) -> Result<String, String> {
-        let translations = self.translations.lock().unwrap();
+        let translations = self.translations.read().unwrap();
         let translation_map = translations
             .translations
             .get(locale)
@@ -169,17 +169,17 @@ impl TranslationManager {
     }
 
     pub fn get_all_translations_for_locale(&self, locale: &str) -> Result<HashMap<String, TranslationValue>, String> {
-        let translations = self.translations.lock().unwrap();
+        let translations = self.translations.read().unwrap();
         translations.translations.get(locale).cloned().ok_or("Locale not found".to_string())
     }
 
     pub fn get_all_translations(&self) -> HashMap<String, HashMap<String, TranslationValue>> {
-        let translations = self.translations.lock().unwrap();
+        let translations = self.translations.read().unwrap();
         translations.translations.clone()
     }
 
     pub fn has_key_in_translations(&self, locale: &str, key: &str) -> bool {
-        let translations = self.translations.lock().unwrap();
+        let translations = self.translations.read().unwrap();
         if let Some(translation_map) = translations.translations.get(locale) {
             self.get_value_by_key(translation_map, key).is_ok()
         } else {
