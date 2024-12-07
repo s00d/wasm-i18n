@@ -1,10 +1,6 @@
 use serde::{Deserialize, Serialize};
-use serde_wasm_bindgen::{from_value, to_value};
 use std::collections::HashMap;
 use std::sync::Mutex;
-use wasm_bindgen::prelude::*;
-use wasm_bindgen_futures::JsFuture;
-use web_sys::{Request, RequestInit, Response};
 use crate::format::format_string;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -32,10 +28,10 @@ impl TranslationManager {
         }
     }
 
-    pub fn set_translations(&self, locale: &str, json: &str) -> Result<(), JsValue> {
+    pub fn set_translations(&self, locale: &str, json: &str) -> Result<(), String> {
         let mut translations = self.translations.lock().unwrap();
         let parsed: HashMap<String, TranslationValue> =
-            serde_json::from_str(json).map_err(|e| JsValue::from_str(&e.to_string()))?;
+            serde_json::from_str(json).map_err(|e| e.to_string())?;
 
         translations
             .translations
@@ -45,27 +41,21 @@ impl TranslationManager {
         Ok(())
     }
 
-    pub fn get_translation(&self, locale: &str, key: &str) -> Result<JsValue, JsValue> {
+    pub fn get_translation(&self, locale: &str, key: &str) -> Result<TranslationValue, String> {
         let translations = self.translations.lock().unwrap();
         let translation_map = translations
             .translations
             .get(locale)
-            .ok_or_else(|| JsValue::from_str("Locale not found"))?;
-        let value = self.get_value_by_key(translation_map, key)?;
-
-        match value {
-            TranslationValue::String(s) => Ok(JsValue::from_str(s)),
-            TranslationValue::Nested(nested) => to_value(nested).map_err(|e| JsValue::from_str(&e.to_string())),
-        }
+            .ok_or_else(|| "Locale not found".to_string())?;
+        self.get_value_by_key(translation_map, key).cloned()
     }
 
-    pub fn get_translations(&self, locale: &str) -> Result<JsValue, JsValue> {
+    pub fn get_translations(&self, locale: &str) -> Result<HashMap<String, TranslationValue>, String> {
         let translations = self.translations.lock().unwrap();
-        let translation = translations.translations.get(locale).ok_or("Locale not found")?;
-        to_value(translation).map_err(|e| JsValue::from_str(&e.to_string()))
+        translations.translations.get(locale).cloned().ok_or("Locale not found".to_string())
     }
 
-    pub fn del_translations(&self, locale: &str) -> Result<(), JsValue> {
+    pub fn del_translations(&self, locale: &str) -> Result<(), String> {
         let mut translations = self.translations.lock().unwrap();
         translations.translations.remove(locale);
         Ok(())
@@ -85,34 +75,32 @@ impl TranslationManager {
         translations.translations.contains_key(locale)
     }
 
-    pub fn get_all_locales(&self) -> Result<JsValue, JsValue> {
+    pub fn get_all_locales(&self) -> Vec<String> {
         let translations = self.translations.lock().unwrap();
-        let locales: Vec<String> = translations.translations.keys().cloned().collect();
-        to_value(&locales).map_err(|e| JsValue::from_str(&e.to_string()))
+        translations.translations.keys().cloned().collect()
     }
 
-    pub fn update_translation(&self, locale: &str, key: &str, value: JsValue) -> Result<(), JsValue> {
+    pub fn update_translation(&self, locale: &str, key: &str, value: TranslationValue) -> Result<(), String> {
         let mut translations = self.translations.lock().unwrap();
         if let Some(existing) = translations.translations.get_mut(locale) {
-            let parsed_value: TranslationValue = from_value(value)?;
             let keys: Vec<&str> = key.split('.').collect();
             let mut current = existing;
             for k in keys.iter().take(keys.len() - 1) {
                 current = match current.get_mut(*k) {
                     Some(TranslationValue::Nested(next_map)) => next_map,
-                    _ => return Err(JsValue::from_str("Invalid key path")),
+                    _ => return Err("Invalid key path".to_string()),
                 };
             }
             if let Some(last_key) = keys.last() {
-                current.insert(last_key.to_string(), parsed_value);
+                current.insert(last_key.to_string(), value);
             }
         } else {
-            return Err(JsValue::from_str("Locale not found"));
+            return Err("Locale not found".to_string());
         }
         Ok(())
     }
 
-    pub fn del_translation(&self, locale: &str, key: &str) -> Result<(), JsValue> {
+    pub fn del_translation(&self, locale: &str, key: &str) -> Result<(), String> {
         let mut translations = self.translations.lock().unwrap();
         if let Some(existing_map) = translations.translations.get_mut(locale) {
             let keys: Vec<&str> = key.split('.').collect();
@@ -131,57 +119,35 @@ impl TranslationManager {
         Ok(())
     }
 
-    pub fn clear_all_translations(&self) -> Result<(), JsValue> {
+    pub fn clear_all_translations(&self) -> Result<(), String> {
         let mut translations = self.translations.lock().unwrap();
         translations.translations.clear();
         Ok(())
     }
 
-    pub async fn load_translations(&self, url: &str) -> Result<(), JsValue> {
-        let opts = RequestInit::new();
-        opts.set_method("GET");
-
-        let request = Request::new_with_str_and_init(url, &opts)?;
-        let window = web_sys::window().ok_or("Window not found")?;
-        let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
-        let resp: Response = resp_value.dyn_into()?;
-        let json = JsFuture::from(resp.json()?).await?;
-        let translations: HashMap<String, HashMap<String, TranslationValue>> = from_value(json)?;
-
-        let mut locked_translations = self.translations.lock().unwrap();
-        for (locale, translation) in translations {
-            locked_translations.translations.insert(locale, translation);
-        }
-
-        Ok(())
-    }
-
-    pub fn format_translation(&self, locale: &str, key: &str, args: JsValue) -> Result<String, JsValue> {
+    pub fn format_translation(&self, locale: &str, key: &str, args: HashMap<String, String>) -> Result<String, String> {
         let translations = self.translations.lock().unwrap();
         let translation_map = translations
             .translations
             .get(locale)
-            .ok_or_else(|| JsValue::from_str("Locale not found"))?;
+            .ok_or_else(|| "Locale not found".to_string())?;
         let value = self.get_value_by_key(translation_map, key)?;
 
         let value_str = if let TranslationValue::String(ref s) = value {
             s
         } else {
-            return Err(JsValue::from_str("Translation is not a string"));
+            return Err("Translation is not a string".to_string());
         };
 
-        let args_map: HashMap<String, String> = from_value(args)
-            .map_err(|e| JsValue::from_str(&format!("Failed to parse arguments: {:?}", e)))?;
-
-        format_string(value_str, &args_map)
-            .map_err(|e| JsValue::from_str(&format!("Error during formatting: {:?}", e)))
+        format_string(value_str, &args)
+            .map_err(|e| format!("Error during formatting: {:?}", e))
     }
 
     fn get_value_by_key<'a>(
         &self,
         map: &'a HashMap<String, TranslationValue>,
         key: &str,
-    ) -> Result<&'a TranslationValue, JsValue> {
+    ) -> Result<&'a TranslationValue, String> {
         let keys: Vec<&str> = key.split('.').collect();
         let mut current = map;
 
@@ -189,29 +155,27 @@ impl TranslationManager {
             if let Some(TranslationValue::Nested(next_map)) = current.get(*k) {
                 current = next_map;
             } else {
-                return Err(JsValue::from_str(&format!("Key '{}' not found", k)));
+                return Err(format!("Key '{}' not found", k));
             }
         }
 
         // Преобразуем последний ключ в `String` для поиска
         current.get(&keys.last().unwrap().to_string()).ok_or_else(|| {
-            JsValue::from_str(&format!(
+            format!(
                 "Key '{}' not found in the provided translation map",
                 keys.last().unwrap()
-            ))
+            )
         })
     }
 
-
-    pub fn get_all_translations_for_locale(&self, locale: &str) -> Result<JsValue, JsValue> {
+    pub fn get_all_translations_for_locale(&self, locale: &str) -> Result<HashMap<String, TranslationValue>, String> {
         let translations = self.translations.lock().unwrap();
-        let translation = translations.translations.get(locale).ok_or("Locale not found")?;
-        to_value(translation).map_err(|e| JsValue::from_str(&e.to_string()))
+        translations.translations.get(locale).cloned().ok_or("Locale not found".to_string())
     }
 
-    pub fn get_all_translations(&self) -> Result<JsValue, JsValue> {
+    pub fn get_all_translations(&self) -> HashMap<String, HashMap<String, TranslationValue>> {
         let translations = self.translations.lock().unwrap();
-        to_value(&translations.translations).map_err(|e| JsValue::from_str(&e.to_string()))
+        translations.translations.clone()
     }
 
     pub fn has_key_in_translations(&self, locale: &str, key: &str) -> bool {
