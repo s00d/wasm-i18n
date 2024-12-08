@@ -1,4 +1,6 @@
-import * as wasmi18n from "./pkg/wasm_i18n.js";
+import { I18n } from "./pkg/wasm_i18n.js";
+
+let i18n_instance = new I18n;
 
 function mapToObject(map) {
     const obj = {};
@@ -17,38 +19,41 @@ function mapToObject(map) {
 }
 
 async function run() {
-    const version = wasmi18n.get_version();
+    const version = i18n_instance.version;
     console.log('version', version);
 
-    wasmi18n.set_translations('en', {
+    i18n_instance.setTranslations('en', {
         "welcome": "Hello {username}"
     });
 
-    wasmi18n.set_translations('en', {
+    i18n_instance.setTranslations('en', {
         "test": {
             "data": '1111'
         }
     });
 
-    const tr = wasmi18n.get_translations('en')
+    const tr = i18n_instance.getTranslations('en')
     const trObject = Object.fromEntries(tr);
     console.log('get_translations', tr, mapToObject(tr));
 
-    const translation = wasmi18n.get_translation('en', "welcome");
+    const translation = i18n_instance.getTranslation('en', "welcome");
     console.log('get_translation welcome', translation);
 
-    const formatted = wasmi18n.format_translation('en', 'welcome', { username: 'Alice' });
+    const formatted = i18n_instance.formatTranslation('en', 'welcome', { username: 'Alice' });
     console.log('formatted', formatted);
 
     document.getElementById('welcome-message').innerText = formatted;
 
-    const test = wasmi18n.get_translation('en', "test.data");
+    const test = i18n_instance.getTranslation('en', "test.data");
     console.log('get_translation test.data', test);
 
-    const test1 = wasmi18n.get_translation('en', "test");
+    const test1 = i18n_instance.getTranslation('en', "test");
     console.log('get_translation test', test1, mapToObject(test1));
+
+    console.log('locales', i18n_instance.locales);
+    console.log('translations', i18n_instance.translations);
 }
 
 run();
 
-export { wasmi18n }
+export { i18n_instance }
