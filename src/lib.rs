@@ -5,7 +5,7 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 mod manager;
 
 use crate::manager::{TranslationManager, TranslationValue};
-use dashmap::DashMap;
+use std::collections::HashMap;
 use wasm_bindgen::prelude::wasm_bindgen;
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
@@ -22,8 +22,15 @@ lazy_static::lazy_static! {
 }
 
 #[wasm_bindgen]
+pub fn get_version() -> String {
+    // Используем `env!` для получения версии проекта во время компиляции
+    let version = env!("CARGO_PKG_VERSION");
+    version.to_string()
+}
+
+#[wasm_bindgen]
 pub fn set_translations(locale: &str, obj: JsValue) -> Result<(), JsValue> {
-    let parsed: DashMap<String, TranslationValue> = serde_wasm_bindgen::from_value(obj)?;
+    let parsed: HashMap<String, TranslationValue> = serde_wasm_bindgen::from_value(obj)?;
     TRANSLATION_MANAGER
         .set_translations(locale, parsed)
         .map_err(JsValue::from)
@@ -86,7 +93,7 @@ pub async fn load_translations(url: &str) -> Result<(), JsValue> {
     let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
     let resp: Response = resp_value.dyn_into()?;
     let json = JsFuture::from(resp.json()?).await?;
-    let translations: DashMap<String, DashMap<String, TranslationValue>> =
+    let translations: HashMap<String, HashMap<String, TranslationValue>> =
         serde_wasm_bindgen::from_value(json)?;
 
     for (locale, translation) in translations {
@@ -116,7 +123,7 @@ pub fn update_translation(locale: &str, key: &str, value: JsValue) -> Result<(),
 
 #[wasm_bindgen]
 pub fn format_translation(locale: &str, key: &str, args: JsValue) -> Result<String, JsValue> {
-    let args_map: DashMap<String, String> = serde_wasm_bindgen::from_value(args)?;
+    let args_map: HashMap<String, String> = serde_wasm_bindgen::from_value(args)?;
     TRANSLATION_MANAGER
         .format_translation(locale, key, args_map)
         .map_err(JsValue::from)

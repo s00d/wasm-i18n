@@ -17,6 +17,9 @@ function mapToObject(map) {
 }
 
 async function run() {
+    const version = wasmi18n.get_version();
+    console.log('version', version);
+
     wasmi18n.set_translations('en', {
         "welcome": "Hello {username}"
     });

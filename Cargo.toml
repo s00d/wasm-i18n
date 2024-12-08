@@ -1,6 +1,6 @@
 [package]
 name = "wasm-i18n"
-version = "0.4.1"
+version = "0.5.0"
 authors = ["Pavel Kuzmin <Virus191288@gmail.com>"]
 edition = "2018"
 description = "A lightweight, high-performance internationalization module for web applications using WebAssembly and Rust."
@@ -27,7 +27,6 @@ regex = "1.11.1"
 web-sys = { version = "0.3.76", features = ["Request", "RequestInit", "Response", "Window", "Headers", "console", "Performance"] }
 js-sys = "0.3.76"
 lazy_static = "1.5.0"
-dashmap = { version = "6.1", features = ["serde"] }
 console = "0.15.8"
 
 [profile.release]

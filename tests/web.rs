@@ -2,7 +2,7 @@
 
 #![cfg(target_arch = "wasm32")]
 
-use dashmap::DashMap;
+use std::collections::HashMap;
 use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
 use serde_json::json;
@@ -51,7 +51,7 @@ fn test_format_translation() {
     set_translations("en", serde_wasm_bindgen::to_value(&json!({
         "welcome": "Welcome, {username}!"
     })).unwrap()).unwrap();
-    let args = DashMap::new();
+    let mut args = HashMap::new();
     args.insert("username".to_string(), "Alice".to_string());
     let args_js = serde_wasm_bindgen::to_value(&args).unwrap();
     let formatted = format_translation("en", "welcome", args_js).unwrap();
@@ -68,7 +68,7 @@ fn test_get_all_locales() {
         "welcome": "Bienvenue, {username}!"
     })).unwrap()).unwrap();
     let locales: Vec<String> = from_value(get_all_locales().unwrap()).unwrap();
-    assert_eq!(locales, vec!["fr", "en"]);
+    assert_eq!(locales, vec!["en", "fr"]);
 }
 
 #[wasm_bindgen_test]
@@ -102,7 +102,7 @@ fn test_get_all_translations() {
     set_translations("en", serde_wasm_bindgen::to_value(&json!({
         "welcome": "Welcome, {username}!"
     })).unwrap()).unwrap();
-    let all_translations: DashMap<String, DashMap<String, String>> =
+    let all_translations: HashMap<String, HashMap<String, String>> =
         from_value(get_all_translations().unwrap()).unwrap();
     assert!(all_translations.contains_key("en"));
 }
@@ -118,7 +118,7 @@ fn test_performance() {
 
     // Измеряем время на установку переводов
     let start = performance.now();
-    for i in 0..1000 {
+    for i in 0..100000 {
         let key = format!("key_{}", i);
         let translation = format!("Translation {}", i);
         let translations = format!(r#"{{"{}": "{}"}}"#, key, translation);
@@ -127,27 +127,27 @@ fn test_performance() {
     }
     let end = performance.now();
     let duration = end - start;
-    console::log_1(&format!("Time to set 1000 translations: {} ms", duration).into());
+    console::log_1(&format!("Time to set 100000 translations: {} ms", duration).into());
 
     // Измеряем время на получение перевода
     let start = performance.now();
-    for i in 0..1000 {
+    for i in 0..100000 {
         let key = format!("key_{}", i);
         get_translation("en", &key).unwrap();
     }
     let end = performance.now();
     let duration = end - start;
-    console::log_1(&format!("Time to get 1000 translations: {} ms", duration).into());
+    console::log_1(&format!("Time to get 100000 translations: {} ms", duration).into());
 
     // Измеряем время на форматирование перевода
-    let args = DashMap::new();
+    let mut args = HashMap::new();
     args.insert("username".to_string(), "Alice".to_string());
     let args_js = serde_wasm_bindgen::to_value(&args).unwrap();
     let start = performance.now();
-    for _ in 0..1000 {
+    for _ in 0..100000 {
         format_translation("en", "key_500", args_js.clone()).unwrap();
     }
     let end = performance.now();
     let duration = end - start;
-    console::log_1(&format!("Time to format 1000 translations: {} ms", duration).into());
+    console::log_1(&format!("Time to format 100000 translations: {} ms", duration).into());
 }
