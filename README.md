@@ -186,7 +186,6 @@ console.log(exists);
 
 | Method         | Description                                         | Example                                                                                                           |
 |----------------|-----------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-| `version`      | Returns the version of the project at compile-time. | ```js let version = i18n.version; console.log(version); // "1.0.0" ```                                            |
 | `locales`      | Retrieves all available locales.                    | ```js let locales = i18n.locales; console.log(locales); // ["en", "fr", "de", ...] ```                            |
 | `translations` | Retrieves all translations for all locales.         | ```js let translations = i18n.translations; console.log(translations); // { "en": { "hello": "Hello" }, ... } ``` |
 

@@ -145,20 +145,6 @@ impl I18n {
         }), }
     }
 
-    /// Returns the version of the project at compile-time.
-    ///
-    /// # Example
-    /// ```js
-    /// let version = i18n.version;
-    /// console.log(version); // "1.0.0"
-    /// ```
-    #[wasm_bindgen(getter)]
-    pub fn version() -> String {
-        let version = env!("CARGO_PKG_VERSION");
-        version.to_string()
-    }
-
-
     /// Retrieves all translations for all locales.
     ///
     /// # Example
@@ -281,7 +267,8 @@ impl I18n {
             .translations
             .get(locale)
             .cloned()
-            .ok_or("Locale not found".to_string());
+            .ok_or("Locale not found".to_string())
+            .map_err(JsValue::from)?;
         serde_wasm_bindgen::to_value(&values).map_err(JsValue::from)
     }
 
@@ -419,7 +406,8 @@ impl I18n {
             .translations
             .get(locale)
             .cloned()
-            .ok_or("Locale not found".to_string());
+            .ok_or("Locale not found".to_string())
+            .map_err(JsValue::from)?;
         serde_wasm_bindgen::to_value(&values).map_err(JsValue::from)
     }
 
