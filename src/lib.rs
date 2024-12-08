@@ -2,7 +2,6 @@
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-mod format;
 mod manager;
 
 use crate::manager::{TranslationManager, TranslationValue};
@@ -23,9 +22,10 @@ lazy_static::lazy_static! {
 }
 
 #[wasm_bindgen]
-pub fn set_translations(locale: &str, json: &str) -> Result<(), JsValue> {
+pub fn set_translations(locale: &str, obj: JsValue) -> Result<(), JsValue> {
+    let parsed: HashMap<String, TranslationValue> = serde_wasm_bindgen::from_value(obj)?;
     TRANSLATION_MANAGER
-        .set_translations(locale, json)
+        .set_translations(locale, parsed)
         .map_err(JsValue::from)
 }
 
@@ -46,15 +46,6 @@ pub fn has_translation(locale: &str, key: &str) -> bool {
 pub fn del_translation(locale: &str, key: &str) -> Result<(), JsValue> {
     TRANSLATION_MANAGER
         .del_translation(locale, key)
-        .map_err(JsValue::from)
-}
-
-#[wasm_bindgen]
-pub fn set_translations_from_object(locale: &str, obj: JsValue) -> Result<(), JsValue> {
-    let parsed: HashMap<String, TranslationValue> = serde_wasm_bindgen::from_value(obj)?;
-    let json_str = serde_json::to_string(&parsed).map_err(|e| JsValue::from_str(&e.to_string()))?;
-    TRANSLATION_MANAGER
-        .set_translations(locale, &json_str)
         .map_err(JsValue::from)
 }
 

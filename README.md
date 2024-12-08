@@ -16,15 +16,15 @@ import initSync, { set_translations, get_translation, get_translations, format_t
 async function run() {
     await initSync();
 
-    await set_translations('en', JSON.stringify({
+    await set_translations('en', {
         "welcome": "Hello {username}"
-    }));
+    });
 
-    await set_translations('en', JSON.stringify({
+    await set_translations('en', {
         "test": {
             "data": '1111'
         }
-    }));
+    });
 
     const tr = get_translations('en');
     console.log(tr);
@@ -46,23 +46,12 @@ run();
 
 ## API Documentation
 
-### `set_translations(locale: string, json: string): Promise<void>`
+### `set_translations(locale: string, json: object): Promise<void>`
 
 Sets translations for a specific locale. If translations already exist for the locale, they will be merged with the new translations.
 
 ```javascript
-await set_translations('en', JSON.stringify({
-    "hello": "Hello",
-    "world": "World"
-}));
-```
-
-### `set_translations_from_object(locale: string, obj: object): Promise<void>`
-
-Sets translations for a specific locale using a JavaScript object.
-
-```javascript
-await set_translations_from_object('en', {
+await set_translations('en', {
     "hello": "Hello",
     "world": "World"
 });

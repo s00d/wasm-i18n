@@ -1,15 +1,15 @@
-import * as wasmi18n from "./dist/wasm_i18n.js";
+import * as wasmi18n from "./pkg/wasm_i18n.js";
 
 async function run() {
-    wasmi18n.set_translations('en', JSON.stringify({
+    wasmi18n.set_translations('en', {
         "welcome": "Hello {username}"
-    }));
+    });
 
-    wasmi18n.set_translations('en', JSON.stringify({
+    wasmi18n.set_translations('en', {
         "test": {
             "data": '1111'
         }
-    }));
+    });
 
     const tr = wasmi18n.get_translations('en')
 

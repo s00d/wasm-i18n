@@ -1,16 +1,16 @@
-use crate::format::format_string;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::RwLock;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+
+#[derive(Serialize, Deserialize, Clone)]
 #[serde(untagged)]
 pub(crate) enum TranslationValue {
     String(String),
     Nested(HashMap<String, TranslationValue>),
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize)]
 struct Translations {
     translations: HashMap<String, HashMap<String, TranslationValue>>,
 }
@@ -30,16 +30,15 @@ impl TranslationManager {
     }
 
     /// Adds or updates translations for a given locale
-    pub fn set_translations(&self, locale: &str, json: &str) -> Result<(), String> {
-        let parsed: HashMap<String, TranslationValue> =
-            serde_json::from_str(json).map_err(|e| e.to_string())?;
+    pub fn set_translations(&self, locale: &str, json: HashMap<String, TranslationValue>) -> Result<(), String> {
+
 
         let mut translations = self.translations.write().unwrap();
         translations
             .translations
             .entry(locale.to_string())
             .or_default()
-            .extend(parsed);
+            .extend(json);
         Ok(())
     }
 
@@ -128,10 +127,19 @@ impl TranslationManager {
 
         match value {
             TranslationValue::String(s) => {
-                format_string(s, &args).map_err(|e| format!("Error during formatting: {:?}", e))
+                self.format_string(s, &args).map_err(|e| format!("Error during formatting: {:?}", e))
             }
             _ => Err("Translation is not a string".to_string()),
         }
+    }
+
+    pub fn format_string(&self, template: &str, args: &HashMap<String, String>) -> Result<String, String> {
+        let mut result = template.to_string();
+        for (key, value) in args {
+            let placeholder = format!("{{{}}}", key);
+            result = result.replace(&placeholder, value);
+        }
+        Ok(result)
     }
 
     /// Retrieves all available locales

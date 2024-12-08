@@ -44,7 +44,6 @@
   "scripts": {
     "publish": "cd dist && npm publish",
     "pack": "wasm-pack build --release --target bundler",
-    "build": "npm run pack && npm run copy-wasm",
     "copy-wasm": "cp -rf pkg/* dist",
     "start": "vite",
     "lint": "eslint .",
