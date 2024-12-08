@@ -10,6 +10,22 @@ A Rust and WebAssembly project template for managing internationalization (i18n)
 
 This project provides a set of functions to manage internationalization (i18n) translations in web applications. It allows you to set, get, delete, and update translations for different locales, as well as load translations from a remote URL.
 
+### 📦 Install
+
+You can install the package via npm:
+
+```bash
+npm install wasm-i18n
+```
+
+Or if you are using yarn:
+
+```bash
+yarn add wasm-i18n
+```
+
+Make sure you have [wasm-bindgen](https://rustwasm.github.io/wasm-bindgen/) and [wasm-pack](https://github.com/rustwasm/wasm-pack) set up in your project to build and run this package.
+
 ## 🚴 Usage
 
 ### Example Usage
