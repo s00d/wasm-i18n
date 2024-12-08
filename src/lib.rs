@@ -6,6 +6,7 @@ mod manager;
 
 use crate::manager::{TranslationManager, TranslationValue};
 use std::collections::HashMap;
+use dashmap::DashMap;
 use wasm_bindgen::prelude::wasm_bindgen;
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen_futures::JsFuture;
@@ -23,7 +24,7 @@ lazy_static::lazy_static! {
 
 #[wasm_bindgen]
 pub fn set_translations(locale: &str, obj: JsValue) -> Result<(), JsValue> {
-    let parsed: HashMap<String, TranslationValue> = serde_wasm_bindgen::from_value(obj)?;
+    let parsed: DashMap<String, TranslationValue> = serde_wasm_bindgen::from_value(obj)?;
     TRANSLATION_MANAGER
         .set_translations(locale, parsed)
         .map_err(JsValue::from)
@@ -116,7 +117,7 @@ pub fn update_translation(locale: &str, key: &str, value: JsValue) -> Result<(),
 
 #[wasm_bindgen]
 pub fn format_translation(locale: &str, key: &str, args: JsValue) -> Result<String, JsValue> {
-    let args_map: HashMap<String, String> = serde_wasm_bindgen::from_value(args)?;
+    let args_map: DashMap<String, String> = serde_wasm_bindgen::from_value(args)?;
     TRANSLATION_MANAGER
         .format_translation(locale, key, args_map)
         .map_err(JsValue::from)

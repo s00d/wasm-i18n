@@ -57,7 +57,7 @@ await set_translations('en', {
 });
 ```
 
-### `get_translations(locale: string): Promise<string>`
+### `get_translations(locale: string): Promise<string|Map<value>>`
 
 Gets all translations for a specific locale as a JSON string.
 
@@ -82,7 +82,7 @@ Deletes a specific translation key for a locale.
 await del_translation('en', 'hello');
 ```
 
-### `get_translation(locale: string, key: string): Promise<string>`
+### `get_translation(locale: string, key: string): Promise<string|Map<value>`
 
 Gets the translation for a specific key in a locale.
 
@@ -135,7 +135,7 @@ const locales = await get_all_locales();
 console.log(locales);
 ```
 
-### `get_all_translations_for_locale(locale: string): Promise<object>`
+### `get_all_translations_for_locale(locale: string): Promise<Map>`
 
 Gets all translations for a specific locale.
 
@@ -160,7 +160,7 @@ Updates a specific translation key for a locale.
 await update_translation('en', 'hello', 'Hello, World!');
 ```
 
-### `get_all_translations(): Promise<object>`
+### `get_all_translations(): Promise<Map>`
 
 Gets all translations for all locales.
 
