@@ -2,8 +2,6 @@ import { I18n } from "./pkg/wasm_i18n.js";
 
 let i18n_instance = new I18n;
 
-console.log(111, i18n_instance)
-
 function mapToObject(map) {
     const obj = {};
 
@@ -22,7 +20,12 @@ function mapToObject(map) {
 
 async function run() {
     i18n_instance.setTranslations('en', {
-        "welcome": "Hello {username}"
+        "welcome": "Hello {username}",
+        "test": {
+            222: {
+                333: 'awfawfa'
+            }
+        }
     });
 
     i18n_instance.setTranslations('en', {
@@ -44,6 +47,9 @@ async function run() {
 
     const test = i18n_instance.getTranslation('en', "test.data");
     console.log('get_translation test.data', test);
+
+    const test2 = i18n_instance.getTranslation('en', "test.222.333");
+    console.log('get_translation test.data', test2);
 
     const test1 = i18n_instance.getTranslation('en', "test");
     console.log('get_translation test', test1, mapToObject(test1));
