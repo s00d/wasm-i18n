@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::RwLock;
 
-
 #[derive(Serialize, Deserialize, Clone)]
 #[serde(untagged)]
 pub(crate) enum TranslationValue {
@@ -30,7 +29,11 @@ impl TranslationManager {
     }
 
     /// Adds or updates translations for a given locale
-    pub fn set_translations(&self, locale: &str, json: HashMap<String, TranslationValue>) -> Result<(), String> {
+    pub fn set_translations(
+        &self,
+        locale: &str,
+        json: HashMap<String, TranslationValue>,
+    ) -> Result<(), String> {
         let mut translations = self.translations.write().unwrap();
         translations
             .translations
@@ -50,7 +53,7 @@ impl TranslationManager {
                 .ok_or("Locale not found")?,
             key,
         )
-            .cloned()
+        .cloned()
     }
 
     /// Checks if a specific key exists in a locale
@@ -105,7 +108,10 @@ impl TranslationManager {
         let mut translations = self.translations.write().unwrap();
         let keys: Vec<&str> = key.split('.').collect();
 
-        let val = translations.translations.get_mut(locale).ok_or("Locale not found")?;
+        let val = translations
+            .translations
+            .get_mut(locale)
+            .ok_or("Locale not found")?;
         self.remove_translation_recursive(val, &keys)?;
 
         Ok(())
@@ -128,14 +134,18 @@ impl TranslationManager {
         )?;
 
         match value {
-            TranslationValue::String(s) => {
-                self.format_string(s, &args).map_err(|e| format!("Error during formatting: {:?}", e))
-            }
+            TranslationValue::String(s) => self
+                .format_string(s, &args)
+                .map_err(|e| format!("Error during formatting: {:?}", e)),
             _ => Err("Translation is not a string".to_string()),
         }
     }
 
-    pub fn format_string(&self, template: &str, args: &HashMap<String, String>) -> Result<String, String> {
+    pub fn format_string(
+        &self,
+        template: &str,
+        args: &HashMap<String, String>,
+    ) -> Result<String, String> {
         let mut result = template.to_string();
         for (key, value) in args {
             let placeholder = format!("{{{}}}", key);
@@ -237,9 +247,9 @@ impl TranslationManager {
 
             // Check that the entry is not a string (i.e., it's a Nested variant)
             match entry {
-                TranslationValue::String(_) => {
-                    Err("Invalid key path: found a string where a nested map was expected".to_string())
-                }
+                TranslationValue::String(_) => Err(
+                    "Invalid key path: found a string where a nested map was expected".to_string(),
+                ),
                 TranslationValue::Nested(ref mut nested_map) => {
                     // Recursively call for the next level
                     self.update_translation_recursive(nested_map, &keys[1..], value)
@@ -265,9 +275,9 @@ impl TranslationManager {
                 .or_insert_with(|| TranslationValue::Nested(HashMap::new()));
 
             match entry {
-                TranslationValue::String(_) => {
-                    Err("Invalid key path: found a string where a nested map was expected".to_string())
-                }
+                TranslationValue::String(_) => Err(
+                    "Invalid key path: found a string where a nested map was expected".to_string(),
+                ),
                 TranslationValue::Nested(ref mut nested_map) => {
                     // Recursively call for the next level
                     self.remove_translation_recursive(nested_map, &keys[1..])?;
