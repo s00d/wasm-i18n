@@ -3,10 +3,10 @@
 #![cfg(target_arch = "wasm32")]
 
 extern crate wasm_bindgen_test;
+use std::collections::HashMap;
+use wasm_bindgen::JsValue;
 use wasm_bindgen_test::*;
 use wasm_i18n::*;
-use wasm_bindgen::JsValue;
-use std::collections::HashMap;
 
 wasm_bindgen_test_configure!(run_in_browser);
 
@@ -55,7 +55,6 @@ fn test_clear_all_translations() {
     clear_all_translations().unwrap();
     assert!(!has_locale("en"));
 }
-
 
 #[wasm_bindgen_test]
 fn test_update_translation() {
