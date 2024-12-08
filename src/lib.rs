@@ -5,7 +5,6 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 mod manager;
 
 use crate::manager::{TranslationManager, TranslationValue};
-use std::collections::HashMap;
 use dashmap::DashMap;
 use wasm_bindgen::prelude::wasm_bindgen;
 use wasm_bindgen::{JsCast, JsValue};
@@ -87,7 +86,7 @@ pub async fn load_translations(url: &str) -> Result<(), JsValue> {
     let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
     let resp: Response = resp_value.dyn_into()?;
     let json = JsFuture::from(resp.json()?).await?;
-    let translations: HashMap<String, HashMap<String, TranslationValue>> =
+    let translations: DashMap<String, DashMap<String, TranslationValue>> =
         serde_wasm_bindgen::from_value(json)?;
 
     for (locale, translation) in translations {
